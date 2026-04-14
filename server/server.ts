@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import authRoutes from './routes/authRoutes.js';
 
 dotenv.config();
 
@@ -28,6 +29,8 @@ if (!MONGO_URI) {
 mongoose.connect(MONGO_URI)
   .then(() => console.log('✅ MongoDB Connected'))
   .catch((err) => console.error('❌ Connection Error:', err));
+
+  app.use('/api/auth', authRoutes);
 
 // Basic Health Check Route
 // Adding types to req and res makes the code robust
