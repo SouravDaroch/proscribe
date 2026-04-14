@@ -3,9 +3,10 @@ import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
+dotenv.config();
 import authRoutes from './routes/authRoutes.js';
 
-dotenv.config();
+
 
 const app: Application = express();
 
