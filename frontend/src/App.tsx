@@ -3,9 +3,8 @@ import Login from './pages/login';
 import ProtectedRoute from './components/ProtectedRoute';
 import './App.css';
 import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
 
-// Simple placeholder for now
-const Dashboard = () => <div className="p-10 text-2xl">Welcome to your Dashboard! (Private)</div>;
 
 function App() {
   return (
