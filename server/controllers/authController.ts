@@ -21,6 +21,7 @@ export const registerUser = async (req: Request, res: Response) => {
       name,
       email,
       password,
+      // role will default to 'writer' as per our Schema
     });
 
     if (user) {
@@ -28,6 +29,7 @@ export const registerUser = async (req: Request, res: Response) => {
         _id: user._id,
         name: user.name,
         email: user.email,
+        role: user.role,
         token: generateToken(user._id as unknown as string),
       });
     }
@@ -53,6 +55,7 @@ export const loginUser = async (req: Request, res: Response) => {
         _id: user._id,
         name: user.name,
         email: user.email,
+        role: user.role,
         token: generateToken(user._id as unknown as string),
       });
     } else {
