@@ -5,7 +5,7 @@ import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { loginSchema, type LoginFormInputs } from '../lib/validation';
+import { loginSchema, type LoginFormInputs } from '../../../shared/schema/validation';
 
 const Login = () => {
   // Attach the resolver and the Type

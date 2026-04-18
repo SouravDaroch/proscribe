@@ -4,7 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import api from '../api/axios';
 import { motion } from 'framer-motion';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { registerSchema, type RegisterFormInputs } from '../lib/validation';
+import { registerSchema, type RegisterFormInputs } from '../../../shared/schema/validation';
 
 const Register = () => {
     // Attaching the resolver and the Type to the form

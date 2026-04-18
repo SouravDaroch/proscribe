@@ -2,7 +2,7 @@ import express from 'express';
 import { createPost } from '../controllers/postController.js';
 import { protect } from '../middleware/authMiddleware.js';
 import { validate } from '../middleware/validateMiddleware.js';
-import { postSchema } from '../schemas/validation.js';
+import { postSchema } from '../../shared/schema/validation.js';
 
 const router = express.Router();
 
