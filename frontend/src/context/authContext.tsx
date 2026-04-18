@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import api from '../api/axios';
 
 interface User {
   _id: string;
@@ -9,8 +10,7 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
-  token: string | null;
-  login: (userData: User, token: string) => void;
+  login: (userData: User) => void;
   logout: () => void;
   isLoading: boolean;
 }
@@ -19,33 +19,36 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
-    if (savedUser && token) {
+    if (savedUser) {
       setUser(JSON.parse(savedUser));
     }
     setIsLoading(false);
-  }, [token]);
+  }, []);
 
-  const login = (userData: User, token: string) => {
+  const login = (userData: User) => {
     setUser(userData);
-    setToken(token);
-    localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(userData));
   };
 
-  const logout = () => {
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem('token');
+const logout = async () => {
+  try {
+    // 1. Tell the server to clear the cookie
+    await api.post('/auth/logout');
+  } catch (error) {
+    console.error("Logout failed on server", error);
+  } finally {
+    // 2. Clear local state regardless of server success
+    setUser(null);  
     localStorage.removeItem('user');
-  };
+  }
+};
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, isLoading }}>
+    <AuthContext.Provider value={{ user, login, logout, isLoading }}>
       {children}
     </AuthContext.Provider>
   );

@@ -25,12 +25,12 @@ export const registerUser = async (req: Request, res: Response) => {
     });
 
     if (user) {
+      generateToken(res, user._id as unknown as string);
       res.status(201).json({
         _id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,
-        token: generateToken(user._id as unknown as string),
       });
     }
   } catch (error) {
@@ -51,12 +51,12 @@ export const loginUser = async (req: Request, res: Response) => {
 
     // 2. Use the matchPassword method we created in the Model
     if (user && (await user.matchPassword(password))) {
+      generateToken(res, user._id as unknown as string);
       res.json({
         _id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,
-        token: generateToken(user._id as unknown as string),
       });
     } else {
       res.status(401).json({ message: 'Invalid email or password' });
@@ -64,4 +64,17 @@ export const loginUser = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({ message: 'Server error during login' });
   }
+};
+
+/**
+ * @desc    Logout user / Clear Cookie
+ * @route   POST /api/auth/logout
+ */
+export const logoutUser = (req: Request, res: Response) => {
+  // Clear the cookie by setting it to an empty string and expiring it immediately
+  res.cookie('jwt', '', {
+    httpOnly: true,
+    expires: new Date(0),
+  });
+  res.status(200).json({ message: 'Logged out successfully' });
 };

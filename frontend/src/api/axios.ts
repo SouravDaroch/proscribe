@@ -2,15 +2,10 @@ import axios from 'axios';
 
 const api = axios.create({
   baseURL: 'http://localhost:5000/api',
+  withCredentials: true, // MANDATORY: This allows cookies to be sent/received
 });
 
-// This interceptor automatically attaches the token to every request
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+// no request interceptor for the Authorization header!
+// The browser handles the 'jwt' cookie automatically.
 
 export default api;

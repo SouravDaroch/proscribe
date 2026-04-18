@@ -6,7 +6,6 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   return (
-    /* Added 'font-sans' and changed global text color for better readability */
     <div className="flex min-h-screen bg-[#F9FAFB] font-sans antialiased text-gray-900">
       {/* Sidebar */}
       <aside className="w-72 bg-white border-r border-gray-100 flex flex-col shadow-sm">

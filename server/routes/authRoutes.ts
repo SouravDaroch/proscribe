@@ -1,5 +1,5 @@
 import express from 'express';
-import { registerUser, loginUser } from '../controllers/authController.js';
+import { registerUser, loginUser, logoutUser } from '../controllers/authController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
@@ -17,5 +17,7 @@ router.get('/profile', protect, (req: any, res) => {
     user: req.user // req.user was attached by the middleware
   });
 });
+
+router.post('/logout', logoutUser);
 
 export default router;
