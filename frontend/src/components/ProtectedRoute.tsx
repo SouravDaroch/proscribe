@@ -6,19 +6,21 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ allowedRoles }: ProtectedRouteProps) => {
-  const { user, token, isLoading } = useAuth();
+  const { user, isLoading } = useAuth(); // Removed 'token' here
 
   if (isLoading) return <div className="p-10">Loading...</div>;
 
-  // 1. If not logged in, go to login
-  if (!token) return <Navigate to="/login" replace />;
+  // 1. Check if 'user' exists instead of 'token'
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
 
-  // 2. If logged in but role isn't allowed, go to dashboard
-  if (allowedRoles && !allowedRoles.includes(user?.role as any)) {
+  // 2. Role-Based Access Control (RBAC)
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
     return <Navigate to="/dashboard" replace />;
   }
 
-  // 3. Otherwise, show the page
+  // 3. Authorized!
   return <Outlet />;
 };
 
