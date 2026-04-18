@@ -1,6 +1,10 @@
 import jwt from 'jsonwebtoken';
 import type { Request, Response, NextFunction } from 'express';
-import User from '../models/User.js';
+import User, { type IUser } from '../models/User.js';
+
+export interface AuthRequest extends Request {
+  user?: IUser | null;
+}
 
 interface DecodedToken {
   id: string;
@@ -22,7 +26,7 @@ export const protect = async (req: Request, res: Response, next: NextFunction) =
 
       // 3. Find user and attach to the request object
       // We exclude the password for security
-      (req as any).user = await User.findById(decoded.id).select('-password');
+      (req as AuthRequest).user = await User.findById(decoded.id).select('-password');
 
       next();
     } catch (error) {

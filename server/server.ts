@@ -5,8 +5,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 dotenv.config();
 import authRoutes from './routes/authRoutes.js';
-
-
+import postRoutes from './routes/postRoutes.js';
 
 const app: Application = express();
 
@@ -32,6 +31,7 @@ mongoose.connect(MONGO_URI)
   .catch((err) => console.error('❌ Connection Error:', err));
 
   app.use('/api/auth', authRoutes);
+  app.use('/api/posts', postRoutes);
 
 // Basic Health Check Route
 // Adding types to req and res makes the code robust
