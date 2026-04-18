@@ -3,13 +3,23 @@ import { useForm } from 'react-hook-form';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../api/axios';
 import { motion } from 'framer-motion';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { registerSchema, type RegisterFormInputs } from '../lib/validation';
 
 const Register = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm();
+    // Attaching the resolver and the Type to the form
+  const { 
+    register, 
+    handleSubmit, 
+    formState: { errors } 
+  } = useForm<RegisterFormInputs>({
+      resolver: zodResolver(registerSchema)
+    });
+
   const navigate = useNavigate();
   const [serverError, setServerError] = useState('');
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: RegisterFormInputs) => {
     try {
       setServerError('');
       await api.post('/auth/register', data);
@@ -23,13 +33,13 @@ const Register = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#fdfcff] p-4">
       {/* Main Container */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
         className="flex w-full max-w-4xl h-[650px] bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100 m-4"
       >
-        
+
         {/* Left Side: Branding/Visual (Hidden on mobile) */}
         <div className="hidden md:flex md:w-1/2 bg-linear-to-br from-sky-500 to-violet-600 p-12 flex-col justify-between text-white">
           <div>
@@ -63,7 +73,7 @@ const Register = () => {
               </label>
               <input
                 type="text"
-                {...register('name', { required: 'Name is required' })}
+                {...register('name')}
                 className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:bg-white focus:border-transparent outline-none transition-all duration-200"
                 placeholder="John Doe"
               />
@@ -76,7 +86,7 @@ const Register = () => {
               </label>
               <input
                 type="email"
-                {...register('email', { required: 'Email is required' })}
+                {...register('email')}
                 className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:bg-white focus:border-transparent outline-none transition-all duration-200"
                 placeholder="name@company.com"
               />
@@ -89,7 +99,7 @@ const Register = () => {
               </label>
               <input
                 type="password"
-                {...register('password', { required: 'Password is required', minLength: { value: 6, message: 'Password must be at least 6 characters' } })}
+                {...register('password')}
                 className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:bg-white focus:border-transparent outline-none transition-all duration-200"
                 placeholder="••••••••"
               />
@@ -103,7 +113,7 @@ const Register = () => {
               Sign Up
             </button>
           </form>
-          
+
           <p className="mt-8 text-center text-sm text-gray-400">
             Already have an account? <Link to="/login" className="text-violet-600 font-medium cursor-pointer hover:text-violet-700">Login</Link>
           </p>

@@ -7,6 +7,12 @@ const Dashboard = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
+  const handleLogout = async () => {
+  await logout();
+  navigate('/login');
+
+};
+
   return (
     <div className="flex min-h-screen bg-linear-to-br from-white to-sky-100 font-sans antialiased text-gray-900">
       {/* Sidebar */}
@@ -49,7 +55,7 @@ const Dashboard = () => {
             </div>
           </div>
           <button
-            onClick={logout}
+            onClick={handleLogout}
             className="w-full mt-4 text-xs font-semibold text-violet-200 hover:text-white transition-colors py-2 cursor-pointer uppercase tracking-wider"
           >
             Sign Out

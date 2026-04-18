@@ -4,21 +4,24 @@ import { useNavigate, Link } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { loginSchema, type LoginFormInputs } from '../lib/validation';
 
 const Login = () => {
-    const { register, handleSubmit, formState: { errors } } = useForm();
+  // Attach the resolver and the Type
+    const { register, handleSubmit, formState: { errors } } = useForm<LoginFormInputs>({
+        resolver: zodResolver(loginSchema)
+    });
     const { login } = useAuth();
     const navigate = useNavigate();
     const [serverError, setServerError] = useState('');
 
-    const onSubmit = async (data: any) => {
+    const onSubmit = async (data: LoginFormInputs) => {
         try {
             setServerError('');
             const response = await api.post('/auth/login', data);
-
             // Use the global login function from Context
             login(response.data);
-
             // Redirect to dashboard
             navigate('/dashboard');
         } catch (err: any) {
@@ -69,7 +72,7 @@ const Login = () => {
             </label>
             <input
               type="email"
-              {...register('email', { required: 'Email is required' })}
+              {...register('email')}
               className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:bg-white focus:border-transparent outline-none transition-all duration-200"
               placeholder="name@company.com"
             />
@@ -82,7 +85,7 @@ const Login = () => {
             </label>
             <input
               type="password"
-              {...register('password', { required: 'Password is required' })}
+              {...register('password')}
               className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:bg-white focus:border-transparent outline-none transition-all duration-200"
               placeholder="••••••••"
             />
