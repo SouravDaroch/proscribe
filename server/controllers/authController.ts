@@ -2,79 +2,66 @@ import { type Request, type Response } from 'express';
 import User, { type IUser } from '../models/User.js';
 import generateToken from '../utils/generateToken.js';
 
-/**
- * @desc    Register a new user
- * @route   POST /api/auth/register
- */
 export const registerUser = async (req: Request, res: Response) => {
   try {
     const { name, email, password } = req.body;
 
-    // 1. Check if user already exists
     const userExists = await User.findOne({ email });
     if (userExists) {
-      return res.status(400).json({ message: 'User already exists' });
+      // 409 Conflict is more accurate for "already exists"
+      return res.status(409).json({ message: 'User already exists' });
     }
 
-    // 2. Create the user (This triggers our .pre('save') hook!)
-    const user = await User.create({
-      name,
-      email,
-      password,
-      // role will default to 'writer' as per our Schema
+    const user = await User.create({ name, email, password });
+
+    // No need for 'if (user)' check if create doesn't throw. 
+    // If it reaches here, user is created.
+    generateToken(res, user._id.toString());
+    
+    return res.status(201).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
     });
-
-    if (user) {
-      generateToken(res, user._id as unknown as string);
-      res.status(201).json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      });
-    }
-  } catch (error) {
-    res.status(500).json({ message: 'Server error during registration' });
+  } catch (error: any) {
+    console.error(`Register Error: ${error.message}`);
+    return res.status(500).json({ message: 'Server error during registration' });
   }
 };
 
-/**
- * @desc    Authenticate user & get token
- * @route   POST /api/auth/login
- */
 export const loginUser = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
-    // 1. Find user by email
     const user = await User.findOne({ email });
 
-    // 2. Use the matchPassword method we created in the Model
+    // Checking 'user' existence and password in one go
     if (user && (await user.matchPassword(password))) {
-      generateToken(res, user._id as unknown as string);
-      res.json({
+      generateToken(res, user._id.toString());
+      
+      return res.json({
         _id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,
       });
-    } else {
-      res.status(401).json({ message: 'Invalid email or password' });
     }
-  } catch (error) {
-    res.status(500).json({ message: 'Server error during login' });
+
+    // Use 401 for both "user not found" and "wrong password" 
+    // to prevent user enumeration (security best practice)
+    return res.status(401).json({ message: 'Invalid email or password' });
+  } catch (error: any) {
+    console.error(`Login Error: ${error.message}`);
+    return res.status(500).json({ message: 'Server error during login' });
   }
 };
 
-/**
- * @desc    Logout user / Clear Cookie
- * @route   POST /api/auth/logout
- */
 export const logoutUser = (req: Request, res: Response) => {
-  // Clear the cookie by setting it to an empty string and expiring it immediately
   res.cookie('jwt', '', {
     httpOnly: true,
     expires: new Date(0),
+    // secure: process.env.NODE_ENV === 'production', // Add this for security!
   });
-  res.status(200).json({ message: 'Logged out successfully' });
+  return res.status(200).json({ message: 'Logged out successfully' });
 };
