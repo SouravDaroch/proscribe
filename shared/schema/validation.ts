@@ -26,7 +26,7 @@ export type LoginFormInputs = z.infer<typeof loginSchema>;
 export type RegisterFormInputs = z.infer<typeof registerSchema>;
 
 export const blockSchema = z.object({
-  id: z.string(),
+  id: z.string().optional(),
   type: z.enum(['heading', 'text', 'code']),
   content: z.string().min(1, 'Block content cannot be empty'),
   metadata: z.record(z.string(), z.any()).optional(),

@@ -2,6 +2,7 @@ import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { postSchema, type PostFormInputs } from '../../../shared/schema/validation.js';
 import EditorBlock from '../components/editor/EditorBlock';
+import axios from 'axios';
 
 const CreatePost = () => {
   const { register, control, handleSubmit } = useForm<PostFormInputs>({
@@ -9,7 +10,7 @@ const CreatePost = () => {
     defaultValues: {
       title: '',
       description: '',
-      blocks: [{ id: crypto.randomUUID(), type: 'text', content: '' }],
+      blocks: [{type: 'text', content: '' }],
     },
   });
 
@@ -18,9 +19,21 @@ const CreatePost = () => {
     name: 'blocks',
   });
 
-  const onSubmit = (data: PostFormInputs) => {
-    console.log("Submitting to Backend:", data);
-  };
+ const onSubmit = async (data: PostFormInputs) => {
+  try {
+    const response = await axios.post('http://localhost:5000/api/posts', data, {
+      withCredentials: true, // IMPORTANT: This sends your JWT cookie to the server
+    });
+
+    if (response.status === 201) {
+      alert('Post saved successfully!');
+      // Later, we will redirect the user to their dashboard
+    }
+  } catch (error: any) {
+    console.error('Error saving post:', error.response?.data || error.message);
+    alert(error.response?.data?.message || 'Something went wrong');
+  }
+};
 
   return (
     <div className="min-h-screen bg-white">
@@ -60,14 +73,14 @@ const CreatePost = () => {
         <div className="mt-12 flex gap-4 border-t pt-6">
           <button
             type="button"
-            onClick={() => append({ id: crypto.randomUUID(), type: 'text', content: '' })}
+            onClick={() => append({type: 'text', content: '' })}
             className="text-gray-400 hover:text-indigo-600 text-sm flex items-center gap-1"
           >
             + Add Text
           </button>
           <button
             type="button"
-            onClick={() => append({ id: crypto.randomUUID(), type: 'heading', content: '' })}
+            onClick={() => append({type: 'heading', content: '' })}
             className="text-gray-400 hover:text-indigo-600 text-sm flex items-center gap-1"
           >
             + Add Heading
