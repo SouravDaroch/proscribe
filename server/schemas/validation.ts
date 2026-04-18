@@ -24,3 +24,18 @@ export const registerSchema = z.object({
 // 3. Types
 export type LoginFormInputs = z.infer<typeof loginSchema>;
 export type RegisterFormInputs = z.infer<typeof registerSchema>;
+
+export const blockSchema = z.object({
+  id: z.string(),
+  type: z.enum(['heading', 'text', 'code']),
+  content: z.string().min(1, 'Block content cannot be empty'),
+  metadata: z.record(z.string(), z.any()).optional(),
+});
+
+export const postSchema = z.object({
+  title: z.string().min(5, 'Title must be at least 5 characters'),
+  description: z.string().optional(),
+  blocks: z.array(blockSchema).min(1, 'Post must have at least one block'),
+});
+
+export type PostFormInputs = z.infer<typeof postSchema>;
