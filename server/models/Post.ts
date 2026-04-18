@@ -2,7 +2,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 // 1. Define the structure of a single Block
 interface IBlock {
-  id: string; // Client-side generated UUID
+  id?: string; // Client-side generated UUID
   type: 'heading' | 'text' | 'code';
   content: string;
   metadata?: {
@@ -29,7 +29,7 @@ const postSchema = new Schema<IPost>({
   // The magic is here: an array of block objects
   blocks: [
     {
-      id: { type: String, required: true },
+      id: { type: String, required: false },
       type: { type: String, enum: ['heading', 'text', 'code'], required: true },
       content: { type: String, required: true },
       metadata: { type: Object }
