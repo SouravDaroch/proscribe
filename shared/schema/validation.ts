@@ -21,7 +21,7 @@ export const registerSchema = z.object({
     .min(6, 'Password must be at least 6 characters'),
 });
 
-// 3. Types
+//  Types
 export type LoginFormInputs = z.infer<typeof loginSchema>;
 export type RegisterFormInputs = z.infer<typeof registerSchema>;
 
