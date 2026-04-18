@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
+import { motion } from 'framer-motion';
 
 const Login = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -16,9 +17,9 @@ const Login = () => {
             const response = await api.post('/auth/login', data);
 
             // Use the global login function from Context
-            login(response.data, response.data.token);
+            login(response.data);
 
-            // Redirect to dashboard (we'll build this next)
+            // Redirect to dashboard
             navigate('/dashboard');
         } catch (err: any) {
             setServerError(err.response?.data?.message || 'Something went wrong');
@@ -28,10 +29,15 @@ const Login = () => {
   return (
   <div className="min-h-screen flex items-center justify-center bg-[#fdfcff]">
     {/* Main Container */}
-    <div className="flex w-full max-w-4xl h-[600px] bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100 m-4">
+    <motion.div 
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="flex w-full max-w-4xl h-[600px] bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100 m-4"
+    >
       
       {/* Left Side: Branding/Visual (Hidden on mobile) */}
-      <div className="hidden md:flex md:w-1/2 bg-violet-600 p-12 flex-col justify-between text-white">
+      <div className="hidden md:flex md:w-1/2 bg-linear-to-br from-sky-500 to-violet-600 p-12 flex-col justify-between text-white">
         <div>
           <h1 className="text-4xl font-bold tracking-tight">ProScribe.</h1>
           <p className="mt-4 text-violet-100 text-lg">
@@ -100,10 +106,10 @@ const Login = () => {
         </form>
         
         <p className="mt-8 text-center text-sm text-gray-400">
-          Not a member? <span className="text-violet-600 font-medium cursor-pointer">Contact Admin</span>
+          Not a member? <Link to="/register" className="text-violet-600 font-medium cursor-pointer hover:text-violet-700">Register</Link>
         </p>
       </div>
-    </div>
+    </motion.div>
   </div>
 );
 };
