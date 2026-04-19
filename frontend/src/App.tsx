@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import CreatePost from './pages/CreatePost';
 import './App.css';
+import PostView from './pages/PostView';
 
 
 function App() {
@@ -25,6 +26,8 @@ function App() {
         <Route element={<ProtectedRoute allowedRoles={['admin', 'writer']} />}>
           <Route path="/editor/new" element={<CreatePost />} />
         </Route>
+
+        <Route path="/post/:id" element={<PostView />} />
 
         {/* Default Redirect */}
         <Route path="*" element={<Navigate to="/dashboard" />} />
