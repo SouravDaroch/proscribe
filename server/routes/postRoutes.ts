@@ -27,6 +27,6 @@ router.get('/:id', protect, getPostById);
 router.post('/', protect, validate(postSchema), createPost);
 
 router.delete('/:id', protect, deletePost);
-router.put('/:id', protect, updatePost);
+router.put('/:id', protect, validate(postSchema), updatePost);
 
 export default router;
