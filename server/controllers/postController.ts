@@ -1,7 +1,31 @@
 import { type Response } from 'express';
-import User from '../models/User.js';
+import { Types } from 'mongoose';
 import Post from '../models/Post.js';
 import { type AuthRequest } from '../middleware/authMiddleware.js';
+
+/**
+ * 🔹 Helper: Ensure user exists
+ */
+const requireUser = (req: AuthRequest, res: Response) => {
+  if (!req.user) {
+    res.status(401).json({ message: 'User context missing' });
+    return null;
+  }
+  return req.user;
+};
+
+/**
+ * 🔹 Helper: Extract author ID safely (handles populated + ObjectId)
+ */
+const getAuthorId = (author: any): string => {
+  if (author instanceof Types.ObjectId) {
+    return author.toString();
+  }
+  if (author && typeof author === 'object' && '_id' in author) {
+    return author._id.toString();
+  }
+  return '';
+};
 
 /**
  * @desc    Create a new post
@@ -10,19 +34,21 @@ import { type AuthRequest } from '../middleware/authMiddleware.js';
  */
 export const createPost = async (req: AuthRequest, res: Response) => {
   try {
+    const user = requireUser(req, res);
+    if (!user) return;
+
     const { title, description, blocks } = req.body;
 
-    // 1. Safety check (helps TS and prevents runtime crashes)
-    if (!req.user) {
-      return res.status(401).json({ message: 'User context missing' });
+    // Basic validation
+    if (!title || typeof title !== 'string') {
+      return res.status(400).json({ message: 'Title is required' });
     }
 
-    // 2. Use the '!' non-null assertion or the check above
     const post = await Post.create({
       title,
       description,
-      author: req.user._id, // TS now knows this exists because of the check above
       blocks,
+      author: user._id,
       status: 'draft',
     });
 
@@ -40,18 +66,14 @@ export const createPost = async (req: AuthRequest, res: Response) => {
  */
 export const getPosts = async (req: AuthRequest, res: Response) => {
   try {
-    if (!req.user) return res.status(401).json({ message: 'User context missing' });
+    const user = requireUser(req, res);
+    if (!user) return;
 
-    let query = {};
-
-    // RBAC: If not admin, filter by author. Admins see everything.
-    if (req.user.role !== 'admin') {
-      query = { author: req.user._id };
-    }
+    const query = user.role === 'admin' ? {} : { author: user._id };
 
     const posts = await Post.find(query)
-      .sort({ createdAt: -1 })
-    // Useful for the Dashboard UI
+      .populate('author', 'name')
+      .sort({ createdAt: -1 });
 
     return res.status(200).json(posts);
   } catch (error: any) {
@@ -61,26 +83,27 @@ export const getPosts = async (req: AuthRequest, res: Response) => {
 };
 
 /**
- * @desc    Get single post by ID ( Post View)
+ * @desc    Get single post by ID
  * @route   GET /api/posts/:id
  * @access  Private
  */
 export const getPostById = async (req: AuthRequest, res: Response) => {
   try {
-    if (!req.user) return res.status(401).json({ message: 'User context missing' });
+    const user = requireUser(req, res);
+    if (!user) return;
 
-    const post = await Post.findById(req.params.id)
+    const post = await Post.findById(req.params.id).populate('author', 'name');
 
     if (!post) {
       return res.status(404).json({ message: 'Post not found' });
     }
 
-    // Ownership Check (Step 5 logic):
-    const isOwner = post.author._id.toString() === req.user._id.toString();
-    const isAdmin = req.user.role === 'admin';
+    const authorId = getAuthorId(post.author);
+    const isOwner = authorId === user._id.toString();
+    const isAdmin = user.role === 'admin';
 
     if (!isOwner && !isAdmin) {
-      return res.status(403).json({ message: 'Access denied: Unauthorized ownership' });
+      return res.status(403).json({ message: 'Access denied' });
     }
 
     return res.status(200).json(post);
