@@ -1,5 +1,5 @@
 import express from 'express';
-import { createPost, deletePost, getPostById, getPosts } from '../controllers/postController.js';
+import { createPost, deletePost, getPostById, getPosts, updatePost } from '../controllers/postController.js';
 import { protect } from '../middleware/authMiddleware.js';
 import { validate } from '../middleware/validateMiddleware.js';
 import { postSchema } from '../../shared/schema/validation.js';
@@ -27,5 +27,6 @@ router.get('/:id', protect, getPostById);
 router.post('/', protect, validate(postSchema), createPost);
 
 router.delete('/:id', protect, deletePost);
+router.put('/:id', protect, updatePost);
 
 export default router;
