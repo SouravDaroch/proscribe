@@ -1,4 +1,5 @@
 import { type Response } from 'express';
+import User from '../models/User.js';
 import Post from '../models/Post.js';
 import { type AuthRequest } from '../middleware/authMiddleware.js';
 
@@ -42,7 +43,7 @@ export const getPosts = async (req: AuthRequest, res: Response) => {
     if (!req.user) return res.status(401).json({ message: 'User context missing' });
 
     let query = {};
-    
+
     // RBAC: If not admin, filter by author. Admins see everything.
     if (req.user.role !== 'admin') {
       query = { author: req.user._id };
@@ -50,7 +51,7 @@ export const getPosts = async (req: AuthRequest, res: Response) => {
 
     const posts = await Post.find(query)
       .sort({ createdAt: -1 })
-      .populate('author', 'username email'); // Useful for the Dashboard UI
+    // Useful for the Dashboard UI
 
     return res.status(200).json(posts);
   } catch (error: any) {
@@ -68,7 +69,7 @@ export const getPostById = async (req: AuthRequest, res: Response) => {
   try {
     if (!req.user) return res.status(401).json({ message: 'User context missing' });
 
-    const post = await Post.findById(req.params.id).populate('author', 'username');
+    const post = await Post.findById(req.params.id)
 
     if (!post) {
       return res.status(404).json({ message: 'Post not found' });

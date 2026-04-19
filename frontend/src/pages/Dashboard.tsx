@@ -10,7 +10,6 @@ const Dashboard = () => {
   const { posts, loading } = usePosts();
   const navigate = useNavigate();
 
-  console.log("Current posts state:", posts);
 
   const handleLogout = async () => {
     await logout();

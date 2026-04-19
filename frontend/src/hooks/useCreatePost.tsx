@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { postSchema, type PostFormInputs } from '../../../shared/schema/validation';
-import axios from 'axios';
+import api from '../api/axios';
 import { useNavigate } from 'react-router-dom';
 
 export const useCreatePost = () => {
@@ -28,7 +28,8 @@ export const useCreatePost = () => {
   const onSubmit = async (data: PostFormInputs) => {
     setIsPublishing(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/posts', data, {
+      console.log('Submitting post:', data);
+      const response = await api.post('/posts', data, {
         withCredentials: true,
       });
       if (response.status === 201) navigate('/dashboard');

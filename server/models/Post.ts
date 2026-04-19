@@ -38,5 +38,8 @@ const postSchema = new Schema<IPost>({
   status: { type: String, enum: ['draft', 'published'], default: 'draft' }
 }, { timestamps: true });
 
+
+
+
 const Post = mongoose.model<IPost>('Post', postSchema);
 export default Post;
