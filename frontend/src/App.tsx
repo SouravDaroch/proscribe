@@ -6,6 +6,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import CreatePost from './pages/CreatePost';
 import './App.css';
 import PostView from './pages/PostView';
+import EditPost from './pages/EditPost';
 
 
 function App() {

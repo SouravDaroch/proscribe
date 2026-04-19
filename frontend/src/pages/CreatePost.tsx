@@ -11,7 +11,14 @@ const containerVariants: Variants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } }
 };
 
-const CreatePost = () => {
+// 1. Added props interface to support Edit mode
+interface CreatePostProps {
+  initialData?: any;
+  isEditing?: boolean;
+}
+
+const CreatePost = ({ initialData, isEditing = false }: CreatePostProps) => {
+  // 2. Passed initialData to the custom hook
   const { 
     register, 
     handleSubmit, 
@@ -23,7 +30,7 @@ const CreatePost = () => {
     navigate, 
     isPublishing,
     formState: { errors } 
-  } = useCreatePost();
+  } = useCreatePost(initialData);
 
   const sensors = useSensors(
    useSensor(PointerSensor, {
@@ -53,27 +60,31 @@ const CreatePost = () => {
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigate('/dashboard')}
-            className="w-10 h-10 flex items-center justify-center rounded-xl text-gray-400 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+            className="w-10 h-10 flex items-center justify-center rounded-xl text-gray-400 hover:bg-gray-50 hover:text-gray-900 transition-colors cursor-pointer"
           >
             <ArrowLeft size={20} />
           </button>
           <div className="flex flex-col">
             <span className="text-[10px] font-bold text-violet-600 uppercase tracking-widest">Editor</span>
-            <span className="text-sm font-bold text-gray-400">Draft in ProScribe</span>
+            {/* 3. Conditional Sub-header text */}
+            <span className="text-sm font-bold text-gray-400">
+              {isEditing ? 'Editing Article' : 'Draft in ProScribe'}
+            </span>
           </div>
         </div>
 
         <button
           disabled={isPublishing}
           onClick={handleSubmit(onSubmit)}
-          className="group bg-gray-900 text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-gray-200 hover:bg-gray-800 disabled:opacity-50 active:scale-[0.98] transition-all flex items-center gap-2"
+          className="group bg-gray-900 text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-gray-200 hover:bg-gray-800 disabled:opacity-50 active:scale-[0.98] transition-all flex items-center gap-2 cursor-pointer"
         >
           {isPublishing ? (
             <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
           ) : (
             <Send size={16} className="group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform" />
           )}
-          {isPublishing ? 'Saving...' : 'Publish'}
+          {/* 4. Conditional Button Label */}
+          {isPublishing ? 'Saving...' : isEditing ? 'Update Post' : 'Publish'}
         </button>
       </motion.header>
 
@@ -164,12 +175,11 @@ const CreatePost = () => {
   );
 };
 
-// Refined Reusable Button
 const BlockButton = ({ icon, label, onClick }: { icon: React.ReactNode, label: string, onClick: () => void }) => (
   <button
     type="button"
     onClick={onClick}
-    className="group flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition-all font-semibold text-sm border border-transparent shadow-sm"
+    className="group flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition-all font-semibold text-sm border border-transparent shadow-sm cursor-pointer"
   >
     <span className="text-gray-400 group-hover:text-gray-600 transition-colors">{icon}</span>
     {label}
