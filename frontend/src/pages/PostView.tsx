@@ -91,7 +91,7 @@ const PostView = () => {
       />
 
       {/* ── Sidebar accent strip (mirrors Dashboard sidebar) ── */}
-      <div className="w-1.5 bg-linear-to-b from-sky-500 to-violet-600 flex-shrink-0" />
+      <div className="w-1.5 bg-linear-to-b from-sky-500 to-violet-600 shrink-0" />
 
       {/* ── Main Area ── */}
       <div className="flex-1 flex flex-col overflow-hidden">
@@ -155,7 +155,7 @@ const PostView = () => {
 
               {/* Author + Meta row */}
               <div className="flex items-center gap-3 mb-8">
-                <div className="w-10 h-10 rounded-full bg-linear-to-br from-sky-500 to-violet-600 flex items-center justify-center text-white font-bold text-sm flex-shrink-0 shadow-sm">
+                <div className="w-10 h-10 rounded-full bg-linear-to-br from-sky-500 to-violet-600 flex items-center justify-center text-white font-bold text-sm shrink-0 shadow-sm">
                   {authorInitial}
                 </div>
                 <div className="flex-1">

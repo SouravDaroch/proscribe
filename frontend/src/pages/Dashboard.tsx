@@ -1,9 +1,9 @@
-import { useNavigate , Link} from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { usePosts } from '../hooks/usePosts'; // 
 import { getExcerpt } from '../utils/getExcerpt'
 import { motion } from 'framer-motion';
-import { FileText, Globe, Plus, Rocket, Flame, PenTool, ExternalLink } from 'lucide-react';
+import { FileText, Globe, Plus, Flame, PenTool, ExternalLink } from 'lucide-react';
 
 type DashboardPost = {
   _id: string;
@@ -97,7 +97,7 @@ const Dashboard = () => {
         </header>
 
         {/* Quick Stats Block */}
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           {[
             { label: 'Total Drafts', count: posts.length, icon: <FileText className="w-6 h-6" />, color: 'bg-blue-50 text-blue-600' },
             { label: 'Published', count: '0', icon: <Globe className="w-6 h-6" />, color: 'bg-green-50 text-green-600' },
@@ -130,12 +130,12 @@ const Dashboard = () => {
                     {getExcerpt(post.blocks, 120)}
                   </p>
                 </div>
-                
+
                 <div className="mt-6 pt-4 border-t border-gray-50 flex items-center justify-between">
                   <span className="text-[10px] font-bold text-violet-500 uppercase tracking-tighter bg-violet-50 px-2 py-1 rounded-md">
                     {new Date(post.createdAt).toLocaleDateString()}
                   </span>
-                  <Link 
+                  <Link
                     to={`/post/${post._id}`}
                     className="flex items-center gap-1 text-sm font-bold text-gray-900 hover:text-violet-600 transition-colors"
                   >
