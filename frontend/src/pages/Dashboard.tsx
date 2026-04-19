@@ -5,9 +5,16 @@ import { getExcerpt } from '../utils/getExcerpt'
 import { motion } from 'framer-motion';
 import { FileText, Globe, Plus, Rocket, Flame, PenTool, ExternalLink } from 'lucide-react';
 
+type DashboardPost = {
+  _id: string;
+  title?: string;
+  blocks?: any;
+  createdAt: string;
+};
+
 const Dashboard = () => {
   const { user, logout } = useAuth();
-  const { posts, loading } = usePosts();
+  const { posts, loading } = usePosts() as { posts: DashboardPost[]; loading: boolean };
   const navigate = useNavigate();
 
 

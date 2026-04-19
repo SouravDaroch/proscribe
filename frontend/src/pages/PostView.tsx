@@ -2,7 +2,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import api from '../api/axios';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Calendar, Clock, BookOpen } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, BookOpen, Edit3, Trash2 } from 'lucide-react';
+import ConfirmDeleteModal from '../components/ConfirmDelete';
 
 // Estimate read time from blocks
 const getReadingTime = (blocks: any[]): number => {
@@ -14,9 +15,9 @@ const getReadingTime = (blocks: any[]): number => {
 
 // Block type badge colors
 const blockTypeMeta: Record<string, { label: string; color: string }> = {
-  text:    { label: 'Paragraph', color: 'bg-blue-50 text-blue-600' },
-  heading: { label: 'Heading',   color: 'bg-violet-50 text-violet-600' },
-  code:    { label: 'Code',      color: 'bg-gray-100 text-gray-600' },
+  text: { label: 'Paragraph', color: 'bg-blue-50 text-blue-600' },
+  heading: { label: 'Heading', color: 'bg-violet-50 text-violet-600' },
+  code: { label: 'Code', color: 'bg-gray-100 text-gray-600' },
 };
 
 const PostView = () => {
@@ -24,13 +25,18 @@ const PostView = () => {
   const navigate = useNavigate();
   const [post, setPost] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(null);
 
   useEffect(() => {
     const fetchPost = async () => {
       try {
         const { data } = await api.get(`/posts/${id}`);
-        console.log(data)
+        // console.log(data)
         setPost(data);
+        // Load user to check permissions
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) setCurrentUser(JSON.parse(storedUser));
       } catch (error) {
         console.error("Failed to fetch post", error);
         navigate('/dashboard');
@@ -40,6 +46,16 @@ const PostView = () => {
     };
     fetchPost();
   }, [id, navigate]);
+
+  const handleDelete = async () => {
+    try {
+      await api.delete(`/posts/${id}`);
+      navigate('/dashboard');
+    } catch (error) {
+      console.error("Delete failed", error);
+    }
+  };
+
 
   // Loading State — matches Dashboard skeleton style
   if (loading) {
@@ -52,7 +68,12 @@ const PostView = () => {
 
   if (!post) return null;
 
- const authorName = post.author?.name || post.author?.username || post.author?.email || 'Unknown Author';
+  // PERMISSION CHECK
+  const isAuthor = currentUser?._id === post.author?._id;
+  const isAdmin = currentUser?.role === 'admin';
+  const canEdit = isAuthor || isAdmin;
+
+  const authorName = post.author?.name || post.author?.username || post.author?.email || 'Unknown Author';
   const authorInitial = authorName.charAt(0).toUpperCase();
   const readingTime = getReadingTime(post.blocks);
   const formattedDate = new Date(post.createdAt).toLocaleDateString('en-US', {
@@ -61,6 +82,13 @@ const PostView = () => {
 
   return (
     <div className="flex min-h-screen bg-linear-to-br from-white to-sky-100 font-sans antialiased text-gray-900">
+
+      <ConfirmDeleteModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handleDelete}
+        title={post.title}
+      />
 
       {/* ── Sidebar accent strip (mirrors Dashboard sidebar) ── */}
       <div className="w-1.5 bg-linear-to-b from-sky-500 to-violet-600 flex-shrink-0" />
@@ -89,9 +117,27 @@ const PostView = () => {
           </div>
 
           {/* Reading time chip */}
-          <div className="flex items-center gap-2 text-xs font-bold text-gray-400 bg-gray-50 border border-gray-100 px-4 py-2 rounded-xl">
-            <Clock size={13} className="text-violet-400" />
-            {readingTime} min read
+        <div className="flex items-center gap-3">
+             {canEdit && (
+               <div className="flex items-center gap-2 mr-4 pr-4 border-r border-gray-100">
+                 <button 
+                  onClick={() => navigate(`/edit-post/${id}`)}
+                  className="p-2 text-gray-400 hover:text-sky-600 hover:bg-sky-50 rounded-lg transition-all cursor-pointer"
+                 >
+                   <Edit3 size={18} />
+                 </button>
+                 <button 
+                  onClick={() => setIsModalOpen(true)}
+                  className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all cursor-pointer"
+                 >
+                   <Trash2 size={18} />
+                 </button>
+               </div>
+             )}
+            <div className="flex items-center gap-2 text-xs font-bold text-gray-400 bg-gray-50 border border-gray-100 px-4 py-2 rounded-xl">
+              <Clock size={13} className="text-violet-400" />
+              {readingTime} min read
+            </div>
           </div>
         </motion.header>
 

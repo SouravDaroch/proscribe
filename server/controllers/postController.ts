@@ -112,3 +112,37 @@ export const getPostById = async (req: AuthRequest, res: Response) => {
     return res.status(500).json({ message: 'Server error: Failed to fetch post' });
   }
 };
+
+/**
+ * @desc    Delete a post
+ * @route   DELETE /api/posts/:id
+ * @access  Private (Owner or Admin)
+ */
+
+export const deletePost = async (req: AuthRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    // 1. Fetch the post first
+    const post = await Post.findById(id);
+
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    // 2. Authorization Logic (The most important part)
+    const isOwner = post.author.toString() === req.user?._id.toString();
+    const isAdmin = req.user?.role === 'admin';
+
+    if (!isOwner && !isAdmin) {
+      return res.status(403).json({ message: 'Not authorized to delete this post' });
+    }
+
+    // 3. Execution
+    await post.deleteOne(); // Using .deleteOne() on the instance is cleaner than findByIdAndDelete here
+
+    return res.status(200).json({ message: 'Post deleted successfully' });
+  } catch (error: any) {
+    return res.status(500).json({ message: 'Server error: Could not delete post' });
+  }
+};
