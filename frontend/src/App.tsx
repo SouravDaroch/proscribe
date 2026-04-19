@@ -15,7 +15,7 @@ function App() {
         {/* Public Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        
+
         {/* Protected Routes (General) */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
@@ -28,6 +28,7 @@ function App() {
         </Route>
 
         <Route path="/post/:id" element={<PostView />} />
+        <Route path="/edit-post/:id" element={<EditPost />} />
 
         {/* Default Redirect */}
         <Route path="*" element={<Navigate to="/dashboard" />} />

@@ -146,3 +146,46 @@ export const deletePost = async (req: AuthRequest, res: Response) => {
     return res.status(500).json({ message: 'Server error: Could not delete post' });
   }
 };
+
+/**
+ * @desc    Update a post
+ * @route   PUT /api/posts/:id
+ * @access  Private (Owner or Admin)
+ */
+export const updatePost = async (req: AuthRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+    const user = requireUser(req, res);
+    if (!user) return;
+
+    // 1. Find the post
+    const post = await Post.findById(id);
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    // 2. Authorization Logic
+    const authorId = getAuthorId(post.author);
+    const isOwner = authorId === user._id.toString();
+    const isAdmin = user.role === 'admin';
+
+    if (!isOwner && !isAdmin) {
+      return res.status(403).json({ message: "Not authorized to update this post" });
+    }
+
+    // 3. Execution
+    // { new: true } returns the document AFTER the update
+    // { runValidators: true } ensures the new data follows your Schema rules
+    const updatedPost = await Post.findByIdAndUpdate(
+      id, 
+      req.body, 
+      { new: true, runValidators: true }
+    ).populate('author', 'name');
+
+    return res.status(200).json(updatedPost);
+  } catch (error: any) {
+    console.error(`Update Post Error: ${error.message}`);
+    return res.status(500).json({ message: "Server error: Could not update post" });
+  }
+};
