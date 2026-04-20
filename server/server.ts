@@ -13,8 +13,8 @@ const app: Application = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
-  origin: 'http://localhost:5173', // Vite's default port
-  credentials: true 
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173', // Vite's default port
+  credentials: true
 }));
 
 // MongoDB Connection
@@ -30,8 +30,8 @@ mongoose.connect(MONGO_URI)
   .then(() => console.log('✅ MongoDB Connected'))
   .catch((err) => console.error('❌ Connection Error:', err));
 
-  app.use('/api/auth', authRoutes);
-  app.use('/api/posts', postRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/posts', postRoutes);
 
 // Basic Health Check Route
 // Adding types to req and res makes the code robust
