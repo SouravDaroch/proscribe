@@ -8,6 +8,7 @@ import './App.css';
 import PostView from './pages/PostView';
 import EditPost from './pages/EditPost';
 import PublicFeed from './pages/PublicFeed';
+import Published from './pages/Published';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         {/* Protected Routes (General) */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/published" element={<Published />} />
         </Route>
 
         {/* Protected Routes (Role-Specific) */}
