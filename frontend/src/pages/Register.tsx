@@ -37,7 +37,7 @@ const Register = () => {
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="flex w-full max-w-4xl h-[650px] bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100 m-4"
+        className="flex w-full max-w-4xl h-162.5 bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100 m-4"
       >
 
         {/* Left Side: Branding/Visual (Hidden on mobile) */}
