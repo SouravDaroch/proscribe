@@ -2,7 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import api from '../api/axios';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Calendar, Clock, BookOpen, Edit3, Trash2 } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, BookOpen, Edit3, Trash2, FileText, Globe } from 'lucide-react';
 import ConfirmDeleteModal from '../components/ConfirmDelete';
 
 // Estimate read time from blocks
@@ -116,24 +116,39 @@ const PostView = () => {
             </div>
           </div>
 
-          {/* Reading time chip */}
-        <div className="flex items-center gap-3">
-             {canEdit && (
-               <div className="flex items-center gap-2 mr-4 pr-4 border-r border-gray-100">
-                 <button 
+          {/* Status and Reading time chips */}
+          <div className="flex items-center gap-3">
+            {/* Status Badge */}
+            <div className="flex items-center gap-2 text-xs font-bold px-3 py-1.5 rounded-xl border">
+              {post.status === 'draft' ? (
+                <>
+                  <FileText size={14} className="text-blue-500" />
+                  <span className="text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md">Draft</span>
+                </>
+              ) : (
+                <>
+                  <Globe size={14} className="text-green-500" />
+                  <span className="text-green-600 bg-green-50 px-2 py-0.5 rounded-md">Published</span>
+                </>
+              )}
+            </div>
+
+            {canEdit && (
+              <div className="flex items-center gap-2 mr-4 pr-4 border-r border-gray-100">
+                <button
                   onClick={() => navigate(`/edit-post/${id}`)}
                   className="p-2 text-gray-400 hover:text-sky-600 hover:bg-sky-50 rounded-lg transition-all cursor-pointer"
-                 >
-                   <Edit3 size={18} />
-                 </button>
-                 <button 
+                >
+                  <Edit3 size={18} />
+                </button>
+                <button
                   onClick={() => setIsModalOpen(true)}
                   className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all cursor-pointer"
-                 >
-                   <Trash2 size={18} />
-                 </button>
-               </div>
-             )}
+                >
+                  <Trash2 size={18} />
+                </button>
+              </div>
+            )}
             <div className="flex items-center gap-2 text-xs font-bold text-gray-400 bg-gray-50 border border-gray-100 px-4 py-2 rounded-xl">
               <Clock size={13} className="text-violet-400" />
               {readingTime} min read
@@ -170,9 +185,20 @@ const PostView = () => {
                     </span>
                   </div>
                 </div>
-                <span className="text-[10px] font-bold text-violet-500 uppercase tracking-tighter bg-violet-50 px-2 py-1 rounded-md">
-                  Article
-                </span>
+                {/* Status Badge */}
+                <div className="flex items-center gap-1.5">
+                  {post.status === 'draft' ? (
+                    <div className="flex items-center gap-1.5 text-[10px] font-bold text-blue-600 uppercase tracking-tighter bg-blue-50 px-2.5 py-1.5 rounded-md border border-blue-100">
+                      <FileText size={12} />
+                      Draft
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-1.5 text-[10px] font-bold text-green-600 uppercase tracking-tighter bg-green-50 px-2.5 py-1.5 rounded-md border border-green-100">
+                      <Globe size={12} />
+                      Published
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Title */}
