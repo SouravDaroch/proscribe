@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { motion, type Variants } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../api/axios';
-import { Layers, ArrowRight, Activity, Clock, Plus, ArrowLeft } from 'lucide-react';
+import { Layers, ArrowRight, Activity, Clock, Plus, Menu } from 'lucide-react';
+import { useMobileSidebar } from '../hooks/useMobileSidebar';
 import Sidebar from '../components/Sidebar';
 
 interface Author {
@@ -23,6 +24,7 @@ const PublicFeed = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const { isMobile, isSidebarOpen, toggleSidebar, closeSidebar } = useMobileSidebar();
 
   useEffect(() => {
     const fetchPublicPosts = async () => {
@@ -56,7 +58,11 @@ const PublicFeed = () => {
   return (
     <div className="flex min-h-screen bg-linear-to-br from-white to-sky-100 font-sans antialiased text-gray-900">
       {/* Sidebar */}
-      <Sidebar />
+      <Sidebar
+        isOpen={!isMobile || isSidebarOpen}
+        onClose={closeSidebar}
+        isMobile={isMobile}
+      />
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
@@ -67,7 +73,16 @@ const PublicFeed = () => {
           className="flex justify-between items-center px-8 py-5 bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm"
         >
           <div className="flex items-center gap-4">
-          
+            {/* Hamburger Menu Button - Mobile Only */}
+            {isMobile && (
+              <button
+                onClick={toggleSidebar}
+                className="p-2 rounded-lg hover:bg-gray-100 transition-colors lg:hidden"
+              >
+                <Menu className="w-5 h-5 text-gray-600" />
+              </button>
+            )}
+
             <div className="flex flex-col">
               <span className="text-[10px] font-bold text-violet-600 uppercase tracking-widest">Public Feed</span>
               <span className="text-sm font-bold text-gray-400">Discover Ideas</span>
@@ -94,7 +109,7 @@ const PublicFeed = () => {
             {/* Title Area */}
             <div className="text-center mb-12">
               <div className="inline-flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-linear-to-br from-blue-500 to-violet-600 rounded-full flex items-center justify-center text-white shadow-lg">
+                <div className="min-w-12 h-12 bg-linear-to-br from-blue-500 to-violet-600 rounded-full flex items-center justify-center text-white shadow-lg">
                   <Layers className="w-6 h-6" />
                 </div>
                 <h2 className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-blue-500 to-violet-600 tracking-tight">
@@ -130,7 +145,7 @@ const PublicFeed = () => {
                 </p>
                 <button
                   onClick={() => navigate('/editor/new')}
-                  className="mt-8 inline-flex items-center gap-3 px-8 py-3.5 bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white font-bold rounded-xl hover:from-violet-700 hover:to-fuchsia-700 transition-all shadow-lg active:scale-[0.98] cursor-pointer group"
+                  className="mt-8 inline-flex items-center gap-3 px-8 py-3.5 bg-linear-to-r from-violet-600 to-fuchsia-600 text-white font-bold rounded-xl hover:from-violet-700 hover:to-fuchsia-700 transition-all shadow-lg active:scale-[0.98] cursor-pointer group"
                 >
                   <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
                   <span>Create First Post</span>
@@ -151,10 +166,10 @@ const PublicFeed = () => {
                     onClick={() => navigate(`/post/${post._id}`)}
                     className="bg-linear-to-br from-white to-gray-50 p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-2xl hover:shadow-violet-900/10 transition-all cursor-pointer group flex flex-col h-full relative overflow-hidden"
                   >
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-400 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                    <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-transparent via-blue-400 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
                     <div className="relative z-10">
                       <div className="flex items-center gap-3 mb-6">
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center text-white font-bold text-sm shadow-lg border-2 border-white/50">
+                        <div className="w-12 h-12 rounded-full bg-linear-to-br from-blue-400 to-cyan-500 flex items-center justify-center text-white font-bold text-sm shadow-lg border-2 border-white/50">
                           {post.author.name.charAt(0).toUpperCase()}
                         </div>
                         <div>
@@ -181,7 +196,7 @@ const PublicFeed = () => {
                       </p>
 
                       <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between">
-                        <div className="flex flex-col items-center gap-4">
+                        <div className="flex flex-col items-center gap-2 pt-2 pr-2">
                           <span className="text-xs font-semibold text-blue-600 uppercase tracking-wider bg-blue-50 px-3 py-1 rounded-full">Community</span>
                           <span className="text-xs text-violet-500 uppercase tracking-wider bg-violet-50 px-3 py-1 rounded-full">{new Date(post.createdAt).toLocaleDateString()}</span>
                           <div className="flex-1"></div>

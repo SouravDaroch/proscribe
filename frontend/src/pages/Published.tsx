@@ -2,10 +2,10 @@ import { Link } from 'react-router-dom';
 import { usePosts } from '../hooks/usePosts';
 import { getExcerpt } from '../utils/getExcerpt';
 import { motion } from 'framer-motion';
-import { Globe, Plus, ExternalLink, ArrowLeft } from 'lucide-react';
+import { Globe, Plus, ExternalLink, ArrowLeft, Menu } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useMobileSidebar } from '../hooks/useMobileSidebar';
 import Sidebar from '../components/Sidebar';
-import { h3 } from 'framer-motion/client';
 
 type PublishedPost = {
   _id: string;
@@ -17,6 +17,7 @@ type PublishedPost = {
 const Published = () => {
   const { posts, loading } = usePosts('published') as { posts: PublishedPost[]; loading: boolean };
   const navigate = useNavigate();
+  const { isMobile, isSidebarOpen, toggleSidebar, closeSidebar } = useMobileSidebar();
 
   // Loading Skeleton
   if (loading) {
@@ -30,7 +31,11 @@ const Published = () => {
   return (
     <div className="flex min-h-screen bg-linear-to-br from-white to-sky-100 font-sans antialiased text-gray-900">
       {/* Sidebar */}
-      <Sidebar />
+      <Sidebar
+        isOpen={!isMobile || isSidebarOpen}
+        onClose={closeSidebar}
+        isMobile={isMobile}
+      />
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
@@ -42,6 +47,16 @@ const Published = () => {
           className="flex justify-between items-center px-8 py-5 bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm"
         >
           <div className="flex items-center gap-4">
+            {/* Hamburger Menu Button - Mobile Only */}
+            {isMobile && (
+              <button
+                onClick={toggleSidebar}
+                className="p-2 rounded-lg hover:bg-gray-100 transition-colors lg:hidden"
+              >
+                <Menu className="w-5 h-5 text-gray-600" />
+              </button>
+            )}
+
             <button
               onClick={() => navigate('/dashboard')}
               className="w-10 h-10 flex items-center justify-center rounded-xl text-gray-400 hover:bg-gray-50 hover:text-gray-900 transition-colors cursor-pointer"
