@@ -5,16 +5,17 @@ import api from '../api/axios';
 import { motion } from 'framer-motion';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { registerSchema, type RegisterFormInputs } from '../../../shared/schema/validation';
+import { Layers } from 'lucide-react';
 
 const Register = () => {
-    // Attaching the resolver and the Type to the form
-  const { 
-    register, 
-    handleSubmit, 
-    formState: { errors } 
+  // Attaching the resolver and the Type to the form
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
   } = useForm<RegisterFormInputs>({
-      resolver: zodResolver(registerSchema)
-    });
+    resolver: zodResolver(registerSchema)
+  });
 
   const navigate = useNavigate();
   const [serverError, setServerError] = useState('');
@@ -43,7 +44,11 @@ const Register = () => {
         {/* Left Side: Branding/Visual (Hidden on mobile) */}
         <div className="hidden md:flex md:w-1/2 bg-linear-to-br from-sky-500 to-violet-600 p-12 flex-col justify-between text-white">
           <div>
-            <h1 className="text-4xl font-bold tracking-tight">ProScribe.</h1>
+            <div className="flex gap-2">
+              <div className="w-10 h-10 rounded-xl bg-linear-to-r from-blue-500 to-violet-600  flex items-center justify-center shadow-md shadow-violet-100/30">
+                <Layers className="text-white" size={20} />
+              </div>
+              <h1 className="text-4xl font-bold tracking-tight">ProScribe.</h1></div>
             <p className="mt-4 text-violet-100 text-lg">
               Join the elite circle of technical writers.
             </p>
