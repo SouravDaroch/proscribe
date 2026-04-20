@@ -174,7 +174,7 @@ npm run dev
 
 ## 🚀 Live Deployment
 
-- **Frontend (Live Demo)**: Hosted on **Vercel** *([https://proscribe-z4eg.vercel.app/](https://proscribe-z4eg.vercel.app/))
+- **Frontend (Live Demo)**: Hosted on **Vercel** https://proscribe-dusky.vercel.app/ 
 - **Backend API**: Hosted on **Render** (`https://proscribe-backend.onrender.com`)
 
 ### Demo Credentials
