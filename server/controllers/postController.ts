@@ -37,7 +37,7 @@ export const createPost = async (req: AuthRequest, res: Response) => {
     const user = requireUser(req, res);
     if (!user) return;
 
-    const { title, description, blocks } = req.body;
+    const { title, description, blocks, status } = req.body;
 
     // Basic validation
     if (!title || typeof title !== 'string') {
@@ -49,7 +49,7 @@ export const createPost = async (req: AuthRequest, res: Response) => {
       description,
       blocks,
       author: user._id,
-      status: 'draft',
+      status: status || 'draft',
     });
 
     return res.status(201).json(post);
@@ -69,7 +69,12 @@ export const getPosts = async (req: AuthRequest, res: Response) => {
     const user = requireUser(req, res);
     if (!user) return;
 
-    const query = user.role === 'admin' ? {} : { author: user._id };
+    const query: any = user.role === 'admin' ? {} : { author: user._id };
+    
+    // Add optional status filtering from query params
+    if (req.query.status === 'published' || req.query.status === 'draft') {
+      query.status = req.query.status;
+    }
 
     const posts = await Post.find(query)
       .populate('author', 'name')
@@ -79,6 +84,24 @@ export const getPosts = async (req: AuthRequest, res: Response) => {
   } catch (error: any) {
     console.error(`Fetch Posts Error: ${error.message}`);
     return res.status(500).json({ message: 'Server error: Failed to fetch posts' });
+  }
+};
+
+/**
+ * @desc    Get all public posts (Public Feed)
+ * @route   GET /api/posts/public
+ * @access  Public
+ */
+export const getPublicPosts = async (req: AuthRequest, res: Response) => {
+  try {
+    const posts = await Post.find({ status: 'published' })
+      .populate('author', 'name')
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json(posts);
+  } catch (error: any) {
+    console.error(`Fetch Public Posts Error: ${error.message}`);
+    return res.status(500).json({ message: 'Server error: Failed to fetch public posts' });
   }
 };
 

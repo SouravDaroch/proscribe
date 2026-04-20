@@ -1,10 +1,16 @@
 import express from 'express';
-import { createPost, deletePost, getPostById, getPosts, updatePost } from '../controllers/postController.js';
+import { createPost, deletePost, getPostById, getPosts, updatePost, getPublicPosts } from '../controllers/postController.js';
 import { protect } from '../middleware/authMiddleware.js';
 import { validate } from '../middleware/validateMiddleware.js';
 import { postSchema } from '../../shared/schema/validation.js';
 
 const router = express.Router();
+
+/**
+ * Route: GET /api/posts/public
+ * Description: Fetch all published posts (Public Feed)
+ */
+router.get('/public', getPublicPosts);
 
 /**
  * Route: GET /api/posts
