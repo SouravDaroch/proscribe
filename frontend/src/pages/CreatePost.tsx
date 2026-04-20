@@ -144,7 +144,7 @@ const CreatePost = ({ initialData, isEditing = false }: CreatePostProps) => {
                     key={field.id}
                     id={field.id}
                     index={index}
-                    type={field.type}
+                    type={(field as any).type}
                     register={register}
                     onRemove={() => remove(index)}
                     error={(errors.blocks as any)?.[index]?.content}

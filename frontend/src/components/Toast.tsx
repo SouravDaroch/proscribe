@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useToast } from '../context/ToastContext';
 import { CheckCircle, XCircle, Info, AlertTriangle, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
