@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: 'https://proscribe-backend.onrender.com/api',
   withCredentials: true, // MANDATORY: This allows cookies to be sent/received
 });
 
