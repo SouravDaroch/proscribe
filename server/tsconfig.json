@@ -1,23 +1,18 @@
 {
   "compilerOptions": {
     /* File Layout */
-    "rootDir": ".", 
-    "outDir": "./dist", 
-
+    "rootDir": ".",
+    "outDir": "./dist",
     /* Environment Settings */
     "module": "nodenext",
     "target": "esnext",
-    "types": [],
-    
     /* Other Outputs */
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
-
     /* Stricter Typechecking Options */
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
-
     /* Recommended Options */
     "strict": true,
     "jsx": "react-jsx",
@@ -26,5 +21,9 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true
-  }
+  },
+  "include": [
+    "./**/*",
+    "../shared/**/*"
+  ]
 }
