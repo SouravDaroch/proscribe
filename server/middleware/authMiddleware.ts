@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import type { Request, Response, NextFunction } from 'express';
 import User, { type IUser } from '../models/User.js';
 
-export interface AuthRequest extends Request<any, any, any, any, any> {
+export interface AuthRequest extends Request {
   user?: IUser | null;
 }
 
@@ -20,7 +20,7 @@ export const protect = async (req: Request, res: Response, next: NextFunction) =
     try {
       // 2. Verify token
       const decoded = jwt.verify(
-        token,
+        token, 
         process.env.JWT_ACCESS_SECRET!
       ) as DecodedToken;
 
