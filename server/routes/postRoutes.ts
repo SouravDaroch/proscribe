@@ -1,5 +1,5 @@
 import express from 'express';
-import { createPost, deletePost, getPostById, getPosts, updatePost, getPublicPosts } from '../controllers/postController.js';
+import { createPost, deletePost, getPostById, getPostForEdit, getPosts, updatePost, getPublicPosts } from '../controllers/postController.js';
 import { protect } from '../middleware/authMiddleware.js';
 import { validate } from '../middleware/validateMiddleware.js';
 import { postSchema } from '../../shared/schema/validation.js';
@@ -20,9 +20,15 @@ router.get('/', protect, getPosts);
 
 /**
  * Route: GET /api/posts/:id
- * Description: Fetch a single post by ID for the View/Edit pages
+ * Description: Fetch a single post by ID (Public access)
  */
-router.get('/:id', protect, getPostById);
+router.get('/:id', getPostById);
+
+/**
+ * Route: GET /api/posts/:id/edit
+ * Description: Fetch a single post by ID for editing (Protected access)
+ */
+router.get('/:id/edit', protect, getPostForEdit);
 
 /**
  * Route: POST /api/posts

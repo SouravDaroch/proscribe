@@ -72,6 +72,7 @@ const PostView = () => {
   const isAuthor = currentUser?._id === post.author?._id;
   const isAdmin = currentUser?.role === 'admin';
   const canEdit = isAuthor || isAdmin;
+  const canDelete = isAuthor || isAdmin;
 
   const authorName = post.author?.name || post.author?.username || post.author?.email || 'Unknown Author';
   const authorInitial = authorName.charAt(0).toUpperCase();
@@ -141,12 +142,14 @@ const PostView = () => {
                 >
                   <Edit3 size={18} />
                 </button>
-                <button
-                  onClick={() => setIsModalOpen(true)}
-                  className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all cursor-pointer"
-                >
-                  <Trash2 size={18} />
-                </button>
+                {canDelete && (
+                  <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all cursor-pointer"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                )}
               </div>
             )}
             <div className="flex items-center gap-2 text-xs font-bold text-gray-400 bg-gray-50 border border-gray-100 px-4 py-2 rounded-xl">

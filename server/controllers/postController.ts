@@ -70,7 +70,7 @@ export const getPosts = async (req: AuthRequest, res: Response) => {
     if (!user) return;
 
     const query: any = user.role === 'admin' ? {} : { author: user._id };
-    
+
     // Add optional status filtering from query params
     if (req.query.status === 'published' || req.query.status === 'draft') {
       query.status = req.query.status;
@@ -106,11 +106,31 @@ export const getPublicPosts = async (req: AuthRequest, res: Response) => {
 };
 
 /**
- * @desc    Get single post by ID
+ * @desc    Get a single post by ID (Public access)
  * @route   GET /api/posts/:id
+ * @access  Public
+ */
+export const getPostById = async (req: any, res: Response) => {
+  try {
+    const post = await Post.findById(req.params.id).populate('author', 'name');
+
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    return res.status(200).json(post);
+  } catch (error: any) {
+    console.error(`Fetch Single Post Error: ${error.message}`);
+    return res.status(500).json({ message: 'Server error: Failed to fetch post' });
+  }
+};
+
+/**
+ * @desc    Get a single post by ID (Private access for editing)
+ * @route   GET /api/posts/:id/edit
  * @access  Private
  */
-export const getPostById = async (req: AuthRequest, res: Response) => {
+export const getPostForEdit = async (req: AuthRequest, res: Response) => {
   try {
     const user = requireUser(req, res);
     if (!user) return;
@@ -201,8 +221,8 @@ export const updatePost = async (req: AuthRequest, res: Response) => {
     // { new: true } returns the document AFTER the update
     // { runValidators: true } ensures the new data follows your Schema rules
     const updatedPost = await Post.findByIdAndUpdate(
-      id, 
-      req.body, 
+      id,
+      req.body,
       { new: true, runValidators: true }
     ).populate('author', 'name');
 

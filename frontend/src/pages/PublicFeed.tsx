@@ -120,14 +120,14 @@ const PublicFeed = () => {
             </div>
 
             {/* Section Header */}
-            <div className="mb-8">
+            {/* <div className="mb-8">
               <h3 className="text-lg font-bold text-gray-900 tracking-tight">
                 Latest Publications
               </h3>
               <p className="text-sm text-gray-500 mt-1">
                 Discover trending content from our vibrant community.
               </p>
-            </div>
+            </div> */}
 
             {/* Posts Grid */}
             {isLoading ? (
@@ -164,10 +164,12 @@ const PublicFeed = () => {
                     variants={itemVariants}
                     whileHover={{ y: -8, scale: 1.02 }}
                     onClick={() => navigate(`/post/${post._id}`)}
-                    className="bg-linear-to-br from-white to-gray-50 p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-2xl hover:shadow-violet-900/10 transition-all cursor-pointer group flex flex-col h-full relative overflow-hidden"
+                    className="bg-linear-to-br from-white to-gray-50 p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-2xl hover:shadow-violet-900/10 transition-all cursor-pointer group flex flex-col justify-between h-full relative overflow-hidden"
                   >
                     <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-transparent via-blue-400 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-                    <div className="relative z-10">
+
+                    {/* Top Content Section */}
+                    <div className="flex flex-col flex-1">
                       <div className="flex items-center gap-3 mb-6">
                         <div className="w-12 h-12 rounded-full bg-linear-to-br from-blue-400 to-cyan-500 flex items-center justify-center text-white font-bold text-sm shadow-lg border-2 border-white/50">
                           {post.author.name.charAt(0).toUpperCase()}
@@ -187,28 +189,28 @@ const PublicFeed = () => {
                         </div>
                       </div>
 
-                      <h2 className="text-xl font-bold text-gray-900 mb-3  transition-colors line-clamp-2 leading-tight">
+                      <h2 className="text-xl font-bold text-gray-900 mb-3 transition-colors line-clamp-2 leading-tight">
                         {post.title}
                       </h2>
 
-                      <p className="text-gray-500 text-base leading-relaxed line-clamp-4 mb-6 flex-1">
+                      <p className="text-gray-500 text-base leading-relaxed line-clamp-4 flex-1">
                         {post.description || post.blocks.find(b => b.type === 'text')?.content || 'Read more to explore this post.'}
                       </p>
+                    </div>
 
-                      <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between">
-                        <div className="flex flex-col items-center gap-2 pt-2 pr-2">
-                          <span className="text-xs font-semibold text-blue-600 uppercase tracking-wider bg-blue-50 px-3 py-1 rounded-full">Community</span>
-                          <span className="text-xs text-violet-500 uppercase tracking-wider bg-violet-50 px-3 py-1 rounded-full">{new Date(post.createdAt).toLocaleDateString()}</span>
-                          <div className="flex-1"></div>
-                        </div>
-                        <Link
-                          to={`/post/${post._id}`}
-                          className="inline-flex items-center gap-2 text-sm font-bold text-center text-blue-600 hover:text-blue-700 transition-colors px-4 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 "
-                        >
-                          Read Article
-                          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                        </Link>
+                    {/* Bottom Footer Section */}
+                    <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between">
+                      <div className="flex flex-col items-center gap-2">
+                        <span className="text-xs font-semibold text-blue-600 uppercase tracking-wider bg-blue-50 px-3 py-1 rounded-full">Community</span>
+                        <span className="text-xs text-violet-500 uppercase tracking-wider bg-violet-50 px-3 py-1 rounded-full">{new Date(post.createdAt).toLocaleDateString()}</span>
                       </div>
+                      <Link
+                        to={`/post/${post._id}`}
+                        className="inline-flex items-center gap-2 text-sm font-bold text-center text-blue-600 hover:text-blue-700 transition-colors px-4 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 "
+                      >
+                        Read Article
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </Link>
                     </div>
                   </motion.div>
                 ))}
