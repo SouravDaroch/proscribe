@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useForm, useFieldArray } from 'react-hook-form';
+import { useForm, useFieldArray, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { postSchema, type PostFormInputs } from '../../../shared/schema/validation';
 import api from '../api/axios';
@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 export const useCreatePost = (initialData?: any) => {
   const navigate = useNavigate();
   const [isPublishing, setIsPublishing] = useState(false);
-  
+
   const form = useForm<PostFormInputs>({
     resolver: zodResolver(postSchema),
     mode: 'onTouched',
@@ -17,6 +17,7 @@ export const useCreatePost = (initialData?: any) => {
       title: '',
       description: '',
       blocks: [{ type: 'text', content: '' }],
+      status: 'draft' as const,
     },
   });
 
@@ -33,23 +34,29 @@ export const useCreatePost = (initialData?: any) => {
         title: initialData.title,
         description: initialData.description || '',
         blocks: initialData.blocks,
+        status: initialData.status || 'draft',
       });
     }
   }, [initialData, form]);
 
-  const onSubmit = async (data: PostFormInputs) => {
+  const onSubmit: SubmitHandler<PostFormInputs> = async (data) => {
     setIsPublishing(true);
     try {
       // Determine if we are updating or creating
       const isEditing = !!initialData?._id;
-      
-      const response = isEditing 
+
+      const response = isEditing
         ? await api.put(`/posts/${initialData._id}`, data, { withCredentials: true })
         : await api.post('/posts', data, { withCredentials: true });
 
       if (response.status === 200 || response.status === 201) {
-        // If updating, navigate to the specific post view, else dashboard
-        navigate(isEditing ? `/post/${initialData._id}` : '/dashboard');
+        // If post is published, navigate to public feed
+        if (data.status === 'published') {
+          navigate('/feed');
+        } else {
+          // If updating, navigate to the specific post view, else dashboard
+          navigate(isEditing ? `/post/${initialData._id}` : '/dashboard');
+        }
       }
     } catch (error: any) {
       console.error('Error saving post:', error.response?.data || error.message);
@@ -59,14 +66,14 @@ export const useCreatePost = (initialData?: any) => {
     }
   };
 
-  return { 
-    ...form, 
-    fields, 
-    append, 
-    remove, 
+  return {
+    ...form,
+    fields,
+    append,
+    remove,
     move,
-    onSubmit, 
-    navigate, 
-    isPublishing 
+    onSubmit,
+    navigate,
+    isPublishing
   };
 };
