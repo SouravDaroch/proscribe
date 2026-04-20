@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { registerSchema, type RegisterFormInputs } from '../../../shared/schema/validation';
 import { Layers } from 'lucide-react';
+import { useToast } from '../context/ToastContext';
 
 const Register = () => {
   // Attaching the resolver and the Type to the form
@@ -19,12 +20,13 @@ const Register = () => {
 
   const navigate = useNavigate();
   const [serverError, setServerError] = useState('');
+  const toast = useToast();
 
   const onSubmit = async (data: RegisterFormInputs) => {
     try {
       setServerError('');
       await api.post('/auth/register', data);
-      alert('Registration successful! Please login.');
+      toast.addToast('Registration successful! Please login.', 'success');
       navigate('/login');
     } catch (err: any) {
       setServerError(err.response?.data?.message || 'Registration failed');

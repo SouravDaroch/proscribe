@@ -3,11 +3,13 @@ import { useForm, useFieldArray, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { postSchema, type PostFormInputs } from '../../../shared/schema/validation';
 import api from '../api/axios';
+import { useToast } from '../context/ToastContext';
 import { useNavigate } from 'react-router-dom';
 
 // Accept initialData as an optional parameter
 export const useCreatePost = (initialData?: any) => {
   const navigate = useNavigate();
+  const toast = useToast();
   const [isPublishing, setIsPublishing] = useState(false);
 
   const form = useForm<PostFormInputs>({
@@ -60,7 +62,7 @@ export const useCreatePost = (initialData?: any) => {
       }
     } catch (error: any) {
       console.error('Error saving post:', error.response?.data || error.message);
-      alert(error.response?.data?.message || 'Something went wrong');
+      toast.addToast(error.response?.data?.message || 'Something went wrong', 'error');
     } finally {
       setIsPublishing(false);
     }
