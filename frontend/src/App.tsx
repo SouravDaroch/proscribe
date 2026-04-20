@@ -7,7 +7,7 @@ import CreatePost from './pages/CreatePost';
 import './App.css';
 import PostView from './pages/PostView';
 import EditPost from './pages/EditPost';
-
+import PublicFeed from './pages/PublicFeed';
 
 function App() {
   return (
@@ -16,6 +16,7 @@ function App() {
         {/* Public Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/feed" element={<PublicFeed />} />
 
         {/* Protected Routes (General) */}
         <Route element={<ProtectedRoute />}>
