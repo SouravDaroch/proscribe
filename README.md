@@ -172,9 +172,10 @@ npm run dev
 - Backend API: http://localhost:5000
 - MongoDB: mongodb://localhost:27017/proscribe
 
-## Live Demo
+## 🚀 Live Deployment
 
-**[Live Demo Link]** - *(Add your deployed application link here)*
+- **Frontend (Live Demo)**: Hosted on **Vercel** *([https://proscribe-z4eg.vercel.app/](https://proscribe-z4eg.vercel.app/))
+- **Backend API**: Hosted on **Render** (`https://proscribe-backend.onrender.com`)
 
 ### Demo Credentials
 - **Writer**: demo.writer@test.com / DemoWriter123
