@@ -83,12 +83,12 @@ const Published = () => {
 
           {/* Posts Grid */}
           {posts.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid  grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
               {posts.map((post) => (
                 <motion.div
                   key={post._id}
                   whileHover={{ y: -5 }}
-                  className="bg-gray-50 p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-xl hover:shadow-violet-900/5 transition-all group flex flex-col h-full"
+                  className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all group flex flex-col h-full"
                 >
                   <div className="flex-1">
                     <h3 className="text-lg font-bold text-gray-900 line-clamp-1 mb-2">
@@ -100,20 +100,15 @@ const Published = () => {
                   </div>
 
                   <div className="mt-6 pt-4 border-t border-gray-50 flex items-center justify-between">
-                    <span className="text-[10px] font-bold text-green-600 uppercase tracking-tighter bg-green-50 px-2 py-1 rounded-md">
-                      Published
+                    <span className="text-[10px] font-bold text-violet-500 uppercase tracking-tighter bg-violet-50 px-2 py-1 rounded-md">
+                      {new Date(post.createdAt).toLocaleDateString()}
                     </span>
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-bold text-violet-500 uppercase tracking-tighter bg-violet-50 px-2 py-1 rounded-md">
-                        {new Date(post.createdAt).toLocaleDateString()}
-                      </span>
-                      <Link
-                        to={`/post/${post._id}`}
-                        className="flex items-center gap-1 text-sm font-bold text-gray-900 hover:text-violet-600 transition-colors"
-                      >
-                        View <ExternalLink className="w-3 h-3" />
-                      </Link>
-                    </div>
+                    <Link
+                      to={`/post/${post._id}`}
+                      className="flex items-center gap-1 text-sm font-bold text-gray-900 hover:text-violet-600 transition-colors"
+                    >
+                      View <ExternalLink className="w-3 h-3" />
+                    </Link>
                   </div>
                 </motion.div>
               ))}
