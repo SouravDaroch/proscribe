@@ -1,29 +1,15 @@
 {
   "compilerOptions": {
-    /* File Layout */
-    "rootDir": ".",
     "outDir": "./dist",
-    /* Environment Settings */
-    "module": "nodenext",
-    "target": "esnext",
-    /* Other Outputs */
-    "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
-    /* Stricter Typechecking Options */
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
-    /* Recommended Options */
-    "strict": true,
-    "jsx": "react-jsx",
-    "verbatimModuleSyntax": true,
-    "isolatedModules": true,
-    "noUncheckedSideEffectImports": true,
-    "moduleDetection": "force",
-    "skipLibCheck": true
+    "module": "commonjs",
+    "target": "es2020",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": false,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node"
   },
-  "include": [
-    "./**/*",
-    "../shared/**/*"
-  ]
+  "include": ["./**/*"],
+  "exclude": ["./node_modules", "./dist"]
 }
