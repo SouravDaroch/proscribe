@@ -34,7 +34,20 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#fdfcff] p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#fdfcff] p-4">
+      {/* Mobile Branding */}
+      <div className="md:hidden flex flex-col items-center text-center mb-4">
+        <div className="flex items-center gap-2">
+          <div className="w-10 h-10 rounded-xl bg-linear-to-r from-blue-500 to-violet-600 flex items-center justify-center shadow-md shadow-violet-100/30">
+            <Layers className="text-white" size={20} />
+          </div>
+          <h1 className="text-4xl font-bold tracking-tight text-gray-900">ProScribe.</h1>
+        </div>
+        <p className="mt-3 text-gray-500 text-base px-4">
+          Join the elite circle of technical writers.
+        </p>
+      </div>
+
       {/* Main Container */}
       <motion.div
         initial={{ opacity: 0, y: 24 }}
